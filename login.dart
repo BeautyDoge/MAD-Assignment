@@ -4,7 +4,7 @@ import 'customTextField.dart';
 import 'customButton.dart';
 import 'forgotPasswordPage.dart';
 import 'resetPasswordPage.dart';
-import 'managerDashboard.dart';
+import 'vehicleManagement.dart';
 
 final navigatorKey = GlobalKey<NavigatorState>();
 
@@ -13,17 +13,6 @@ Future<void> main() async {
     url: 'https://fslfjrhryjroacsfxaqf.supabase.co',
     anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZzbGZqcmhyeWpyb2Fjc2Z4YXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTcyNTA4OTksImV4cCI6MjA3MjgyNjg5OX0.55h3kWxFzcEJYElcPqFwdtAAuLqmTKHMA3v9dFBS18c',
   );
-
-  Supabase.instance.client.auth.onAuthStateChange.listen((data) {
-    final event  = data.event;
-    final session = data.session;
-
-    if (event == AuthChangeEvent.passwordRecovery) {
-      navigatorKey.currentState?.push(
-        MaterialPageRoute(builder: (_) => const ResetPasswordPage()),
-      );
-    }
-  });
 
   runApp(const MyApp());
 }
@@ -61,13 +50,8 @@ class MyApp extends StatelessWidget {
 
       initialRoute: initialRoute,
       routes: {
-        // '/': (context) => const LoginPage(),
-        // '/resetPasswordPage': (context) {
-        //   final accessToken  = Uri.base.queryParameters['access_token'];
-        //   return ResetPasswordPage(accessToken : accessToken );
-        // },
-
         '/': (context) => const LoginPage(),
+        '/forgotPassword': (context) => const ForgotPasswordPage(),
         '/resetPasswordPage': (context) {
           // Code may come from query OR fragment (because Supabase sends it differently for web)
           final queryParams = Uri.base.queryParameters;
@@ -82,7 +66,7 @@ class MyApp extends StatelessWidget {
 
           final code = queryParams['code'] ?? fragParams['code'];
 
-          return ResetPasswordPage(accessToken: code);
+          return ResetPasswordPage();
         },
       },
     );
@@ -111,9 +95,6 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    // final screenWidth = MediaQuery.of(context).size.width;
-    // final cardWidth = screenWidth * 0.88;
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Job Management'),
@@ -129,13 +110,12 @@ class _LoginPageState extends State<LoginPage> {
               children: [
                 const SizedBox(height: 66),
                 Container(
-                  //width: cardWidth,
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(16.0),
                     boxShadow: const[
                       BoxShadow(
-                        //color: Color(0x11000000),
+                        color: Color(0x11000000),
                         blurRadius: 8,
                         offset: Offset(0, 4),
                       ),
@@ -240,7 +220,7 @@ class _LoginPageState extends State<LoginPage> {
                                       );
                                       Navigator.push(
                                           context,
-                                          MaterialPageRoute(builder: (context) => const ManagerDashboard())
+                                          MaterialPageRoute(builder: (context) => const vehicleManagement())
                                       );
                                     } else {
                                       ScaffoldMessenger.of(context).showSnackBar(
